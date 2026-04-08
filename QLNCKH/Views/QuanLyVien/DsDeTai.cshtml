@@ -1,0 +1,493 @@
+﻿
+@model IEnumerable<QLNCKH.Models.DTO.DTDeTai>
+@{
+    ViewBag.Title = "DsDeTai";
+    Layout = "~/Views/Shared/_LayoutQuanLyVien.cshtml";
+}
+
+
+<style>
+    #txtLink:hover {
+        border: 1px solid #6bacb2;
+        cursor: pointer
+    }
+
+    h4 {
+        margin: auto;
+        font-weight: 600;
+        font-size: 21px;
+    }
+
+    .modal-header {
+        display: flex;
+    }
+
+        .modal-header .close {
+            padding: 0;
+            margin: 0;
+        }
+
+    .badge-color-success {
+        background-color: #d6f0e0;
+        color: #0d6832;
+    }
+
+    .badge-color-primary {
+        background-color: #dfe7f6;
+        color: #2c58a0;
+    }
+
+    .badge-color-warning {
+        background-color: #fbf0da;
+        color: #73510d;
+    }
+</style>
+@*THEM STYLE TOAST*@
+<link href="~/Theme/toast/css/toast.css" rel="stylesheet" />
+@*THEM js TOAST*@
+<script src="~/Theme/toast/js/js-toast.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#mytable').DataTable();
+    });
+</script>
+<div class="content-wrapper">
+    <div id="toast">
+    </div>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h2 style="text-align:center">Danh Sách Đề Tài</h2>
+                    <br />
+                    <br />
+                    <div style="display:flex;justify-content:space-between">
+                        <div>
+                            @using (Html.BeginForm("DsDeTai", "QuanLyVien", FormMethod.Get, new { @class = "form-inline" }))
+                            {
+                                <span style="margin-left:10px">Từ Ngày: </span>
+                                <input style="height:32px" type="date" name="strLoc1" id="strLocjs1" />
+
+                                <spans style="margin-left:10px">Đến Ngày: </spans>
+
+                                <input style="height:32px" type="date" name="strLoc2" id="strLocjs2" />
+
+
+                                <button type="submit" class="btn btn-sm btn-info" id="Loc" style="border-radius: unset; margin-left: 10px;height:32px"><i class="fa-solid fa-list-check"></i> Lọc</button>
+                            }
+                        </div>
+                        <div>
+                            @using (Html.BeginForm("GenerateReportDeTai", "QuanLyVien", FormMethod.Get, new { @class = "form-inline" }))
+                            {
+                                <input style="display:none" type="text" name="str1" value="@ViewBag.str1">
+                                <input style="display:none" type="text" name="str2" value="@ViewBag.str2">
+                                <button class="btn btn-sm btn-info" style="height:32px;border:none;" id="Export">Generate Excel Report</button>
+                            }
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+
+                                <table class="table" id="mytable">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.TenDeTai)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.MaSoSinhVien)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.TenGiangVien)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.GhiChu)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.TenTrangThai)
+                                            </th>
+                                            @*<th style="text-align:center"> @Html.DisplayName("Hành Động")</th>*@
+                                        </tr>
+                                    </thead>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="@item.MaDeTai">
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TenDeTai)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.MaSoSinhVien)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TenGiangVien)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.GhiChu)
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-color rounded-pill d-inline">
+                                                    @Html.DisplayFor(modelItem => item.TenTrangThai)
+                                                </span>
+                                            </td>
+                                            @*<td style="text-align:center">
+                                                    <button class="btn btn-sm btn-info" name="update"><i class="fa-solid fa-list-check"></i> Phân công</button>&nbsp
+                                                    <button class="btn btn-sm btn-warning" name="view"><i class="fa-solid fa-wrench"></i> Chi tiết</button>&nbsp
+                                                    <button class="btn btn-sm btn-danger" name="delete" data-toggle="modal" data-target="#ModalHuy" data-id="@item.MaDeTai"><i class="fa-solid fa-trash-can"></i> Hủy</button>
+                                                </td>*@
+                                        </tr>
+                                    }
+
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="modalDeTai" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="card-body">
+                <h3 style="font-weight:700;text-align:center;" class="modal-title" id="modalTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td hidden>
+                            <input type="text" value="" hidden />
+                        </td>
+                        <td>
+                            <label>Tên Đề Tài:</label>
+                            <input type="text" class="form-control" id="txtTenDT" />
+                        </td>
+                        <td>
+                            <label>Trạng Thái:</label>
+                            <input type="text" class="form-control" id="txtTenTT" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Sinh Viên Thực Hiện:</label>
+                            <input type="text" class="form-control" id="txtTenSV" />
+                        </td>
+                        <td>
+                            <label>Mã Só Sinh Viên:</label>
+                            <input type="text" class="form-control" id="txtMaSV" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Tên Hội Đồng:</label>
+                            <input type="text" class="form-control" id="txtTenHD" />
+                        </td>
+                        <td>
+                            <label>Link De Cuong:</label>
+                            <input type="text" class="form-control" id="txtLink" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalPCDetai" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalTitleDeTai">Phân công hội đồng cho đề tài</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 id="textbody">Bạn thật sư muốn huy đề tài!</h5>
+                <div id="body" class="form-group">
+                    <label>Chọn Hội Đồng: </label>
+                    <select class="form-control" id="Select_DsHD">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btn-addPCDT">Xác Nhận</button>
+                <button type="button" class="btn btn-success" id="btn-HuyPCDT">Đồng ý</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal PDF-->
+<div class="modal fade bd-example-modal-lg" id="modalpdf" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div style="border: 1px solid blue;text-align:center;" id="myDiv" tabindex="0">
+                <canvas id="the-canvas" style="text-align: center"></canvas>
+                <br style="height:1px;" />
+                <img src="~/Theme/images/chevron-left-solid.svg" id="prev" width="15" height="15" />
+                &nbsp;
+                <span><span id="page_num"></span> - <span id="page_count"></span></span>&nbsp;
+                <img src="~/Theme/images/chevron-right-solid.svg" id="next" width="15" height="15" />
+                <img src="~/Theme/images/fullscreen.png" id="fullscreen" width="15" height="15" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        Get_DSHD();
+    })
+
+    $(document).on("click", "button[name='delete']", function () {
+        let idhuy =  $(this).closest('tr').attr('id');
+        $('#ModalTitleDeTai').text("Hủy Đề Tài");
+        $('#textbody').show();
+        $('#btn-HuyPCDT').show();
+        $('#btn-addPCDT').hide();
+        $('#body').hide();
+        $("#modalPCDetai").modal();
+        $('#btn-HuyPCDT').click(function () {
+            $.ajax({
+                url: '/QuanLy/XoaDeTai',
+                type: 'post',
+                data: {
+                    idDT: idhuy
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        showSuccessToastXoaDeTai();
+                        setTimeout(function () { location.reload() }, 1000);
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            });
+        })
+    });
+
+    $(document).on('click', "button[name='update']", function () {
+        let id = $(this).closest('tr').attr('id');
+        $('#ModalTitleDeTai').text("Phân công hội đồng cho đề tài");
+        $('#body').show();
+        $('#btn-HuyPCDT').hide();
+        $('#btn-addPCDT').show();
+        $('#textbody').hide();
+        $('#modalPCDetai').modal();
+        $('#btn-addPCDT').click(function () {
+            let idhd = $('#Select_DsHD').val();
+            if (idhd === "") {
+                showInfoToastcheckchonHD();
+            }
+            else {
+            }
+            $.ajax({
+                url: '/QuanLy/ThemPCDeTai',
+                type: 'post',
+                data: {
+                    idDT: id,
+                    idHD: idhd
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        showSuccessToastPhanCongDeTai();
+                        setTimeout(function () { location.reload() }, 700)
+                    }
+                    else {
+                        showWarnToast();
+                    }
+                }
+            })
+            }
+        )
+    })
+
+    $(document).on('click', "button[name='view']", function () {
+        let id = $(this).closest('tr').attr('id');
+        $.ajax({
+            url: '/QuanLy/Detail',
+            type: 'get',
+            data: {
+                idDT: id
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    $('#txtTenDT').val(data.dt.TenDT);
+                    $('#txtTenDT').prop("readonly", true);
+                    $('#txtTenNhom').val(data.dt.TenNhom);
+                    $('#txtTenNhom').prop("readonly", true);
+                    $('#txtTenSV').val(data.dt.TenSV);
+                    $('#txtTenSV').prop("readonly", true);
+                    $('#txtMaSV').val(data.dt.MaSV);
+                    $('#txtMaSV').prop("readonly", true);
+                    $('#txtTenHD').val(data.dt.TenHD);
+                    $('#txtTenHD').prop("readonly", true);
+                    $('#txtTenTT').val(data.dt.TenTT);
+                    $('#txtTenTT').prop("readonly", true);
+                    $('#txtLink').val(data.dt.LinkDT);
+                    $('#txtLink').prop("readonly", true);
+                    $('#modalTitle').text('Xem chi tiết Đề Tài');
+                    $('#modalDeTai').modal();
+
+                }
+                else {
+                    alert(data.msg);
+                }
+            }
+        })
+    });
+
+    function Get_DSHD() {
+        $.ajax({
+            url: '@Url.Action("DsHoiDong", "QuanLy")',
+            type: 'get',
+            data: {},
+            success: function (data) {
+                if (data.code == 200) {
+                    $('#Select_DsHD').empty().append(new Option('Chọn Hội đồng', ""));
+                    $.each(data.hd, function (k, v) {
+                        $('#Select_DsHD').append($('<option>',
+                            {
+                                value: v.MaHoiDong,
+                                text: v.TenHoiDong
+                            }));
+
+                    })
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $('#txtLink').click(function () {
+        let link = $('#txtLink').val().trim();
+        $('#modalpdf').modal();
+
+        //Đường dẫn file PDF
+        var url = '/Theme/Luufile/' + link;
+
+        //Các hàm định nghĩa sẵn trong thư viện PDF.js
+        var pdfjsLib = window['pdfjs-dist/build/pdf'];
+        var pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.0,
+            canvas = document.getElementById('the-canvas'),
+            ctx = canvas.getContext('2d');
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function (page) {
+                var viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                var renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                var renderTask = page.render(renderContext);
+                renderTask.promise.then(function () {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+            document.getElementById('page_num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                //return;
+                pageNum = 0;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+        pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            document.getElementById('page_count').textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+        });
+
+
+
+        /////////Mình tự viết tay customize
+
+        //Sự kiện nhấn vào hình prev
+        document.getElementById('prev').addEventListener('click', onPrevPage);
+        //Sự kiện nhấn vào hình next
+        document.getElementById('next').addEventListener('click', onNextPage);
+        //Sự kiện nhấn vào hình fullscreen
+        document.getElementById('fullscreen').addEventListener("click", fullscreen);
+        //Sự kiện click chuột trong the-canvas
+        document.getElementById('the-canvas').addEventListener("click", onNextPage);
+
+
+        //Hàm javascript tự viết khi click vào the-canvas thì showfull màn hình
+        function fullscreen() {
+            var el = document.getElementById('the-canvas');
+            if (el.webkitRequestFullScreen) {
+                el.webkitRequestFullScreen();
+            }
+            else {
+                el.mozRequestFullScreen();
+            }
+        }
+
+        //Hàm xử lý các sự kiện bàn phím khi nhấn phím Up,Down,Left,Right
+        document.querySelector('#myDiv').addEventListener('keydown', function (e) {
+            //if (event.key === "ArrowDown") {
+            //    onNextPage();
+            //}
+            //if (event.key === "ArrowUp") {
+            //    onPrevPage();
+            //}
+            if (event.key === "ArrowLeft") {
+                onPrevPage();
+            }
+            if (event.key === "ArrowRight") {
+                onNextPage();
+            }
+        })
+    });
+
+
+</script>
+
+

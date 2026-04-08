@@ -1,0 +1,489 @@
+﻿@model IEnumerable<QLNCKH.Models.HOIDONGDUYETDECUONG>
+
+@{
+    ViewBag.Title = "PhanCongHoiDong";
+    Layout = "~/Views/Shared/_LayoutQuanLy.cshtml";
+}
+@*THEM STYLE TOAST*@
+<link href="~/Theme/toast/css/toast.css" rel="stylesheet" />
+@*THEM js TOAST*@
+<script src="~/Theme/toast/js/js-toast.js"></script>
+@*Doi link font trong layoutQL*@
+
+<style>
+    /*Chỉnh style*/
+    td, th {
+        text-align: center;
+    }
+
+    i {
+        font-family: initial;
+    }
+
+    h4 {
+        margin: auto;
+        font-weight: 600;
+        font-size: 21px;
+    }
+
+    .modal-header {
+        display: flex;
+    }
+
+        .modal-header .close {
+            padding: 0;
+            margin: 0;
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#mytable').DataTable();
+    });
+</script>
+
+<div class="content-wrapper">
+    <div id="toast">
+    </div>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h2 style="text-align:center">Danh sách hội đồng</h2>
+                    <br />
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <p>
+                                    <button class="btn btn-sm btn-success" name="create"><i class="fa-solid fa-user-plus"></i> Thêm hội đồng</button>
+                                </p>
+                                <table class="table" id="mytable">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: initial">
+                                                @Html.DisplayName("Tên Hội Đồng")
+                                            </th>
+                                            <th style="text-align: center">
+                                                @Html.DisplayName("Chương Trình Đào Tạo")
+                                            </th>
+                                            <th style="text-align: center">
+                                            @Html.DisplayName("Hành động")</th>
+                                        </tr>
+                                        </thead>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr id="@item.MaHoiDong">
+                                                <td style="text-align: initial">
+                                                    @Html.DisplayFor(modelItem => item.TenHoiDong)
+                                                </td>
+                                                <td style="text-align: center">
+                                                    @Html.DisplayFor(modelItem => item.MaCT)
+                                                </td>
+
+                                                <td style="text-align: center">
+                                                    @{
+                                                        if (item.SoLuongTV == false)
+                                                        {
+                                                            <button class="btn btn-sm btn-info" name="update"><i class="fa-solid fa-list-check"></i> Phân Công</button>@:&nbsp
+                                                            <button style="color: #fff;" class="btn btn-sm btn-warning checkfixPC"><i class="fa-solid fa-wrench"></i> Chỉnh Sửa</button>@:&nbsp
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-sm btn-info checkPC"><i class="fa-solid fa-list-check"></i> Phân Công</button>@:&nbsp
+                                                            <button style="color: #fff;" class="btn btn-sm btn-warning" name="view"><i class="fa-solid fa-wrench"></i> Chỉnh Sửa</button>@:&nbsp
+                                                        }
+                                                    }
+
+                                                    <button class="btn btn-sm btn-danger" name="delete" data-toggle="modal" data-target="#ModalHuy"><i class="fa fa-trash" aria-hidden="true"></i> Hủy</button>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Phân công-->
+<div class="modal fade" id="modalHoiDong" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="titlePhanCongHoiDong"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label>Chủ tịch hội đồng: </label>
+                        <select class="form-control" id="Select_DsGV1">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thư kí chương trình: </label>
+                        <select class="form-control" id="Select_DsGV2">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giảng viên phản biện: </label>
+                        <select class="form-control" id="Select_DsGV3">
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_PhanCong" class="btn btn-success">Lưu</button>
+                <button type="button" class="btn btn-secondary cls" data-dismiss="modal">Đóng</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="modalfixHoiDong" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="titlefixHoiDong"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <h3 style="text-align:center">Thông tin cũ</h3>
+                        <div id="DsCTGVcu">
+                        </div>
+                    </div>
+                   
+                    <div id="DsCTGVmoi" class="col-6">
+                        <h3 style="text-align:center">Thông tin mới</h3>
+                        <div id="reset">
+                            <div class="form-group">
+                                <label>Chủ tịch hội đồng: </label>
+                                <select class="form-control" id="Select_DsGVSua1">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Thư kí chương trình: </label>
+                                <select class="form-control" id="Select_DsGVSua2">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Giảng viên phản biện: </label>
+                                <select class="form-control" id="Select_DsGVSua3">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_Sua" class="btn btn-success">Lưu</button>
+                <button type="button" class="btn btn-secondary cls" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm hội đồng -->
+<div class="modal fade" id="modalThemHoiDong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="titleAddHoiDong" style="text-align:center;"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="soluongHoidong"></p>
+                <div class="form-group"> <input class="form-control" type="number" min="1" max="10" id="countNum" value="" /></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btn_Huy" class="btn btn-success">Xác nhận</button>
+                <button type="button" class="btn btn-success" id="btn_ThemHoiDong">Đồng ý</button>
+                <button type="button" class="btn btn-secondary cls" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //
+    $(document).on('click', ".cls", function () {
+        location.reload();
+    })
+
+    $(document).on('click', ".close", function () {
+        location.reload();
+    })
+
+
+    //Sửa hội đồng
+    $(document).on("click", "button[name='view']", function () {
+        var idHD = $(this).closest('tr').attr('id');
+        $('#DsCTGVcu').empty();
+
+        Get_DSGV();
+        $('#DsCTGVmoi').hide();
+
+        Get_DSGVChinhSua(idHD);
+        setTimeout(function () {
+
+            $('#lb1').text("Chủ tịch hội đồng:");
+            $('#lb2').text("Thư kí chương trình:");
+            $('#lb3').text("Giảng viên phản biện:");
+            $('#DsCTGVmoi').show();
+        }, 580)
+
+        $("#titlefixHoiDong").text('Sửa phân công hội đồng');
+        $("#modalfixHoiDong").modal();
+
+        $('#btn_Sua').click(function () {
+            var strHD = "";
+            var gv1cu = $('#gvcu1').val() + '|';
+            var gv2cu = $('#gvcu2').val() + '|';
+            var gv3cu = $('#gvcu3').val() + '|' ;
+
+            var gv1 = $('#Select_DsGVSua1').val() + '|';
+            var gv2 = $('#Select_DsGVSua2').val() + '|';
+            var gv3 = $('#Select_DsGVSua3').val();
+
+            var idgv1 = $('#Select_DsGVSua1').val() ;
+            var idgv2 = $('#Select_DsGVSua2').val() ;
+            var idgv3 = $('#Select_DsGVSua3').val();
+
+            strHD = gv1cu + gv2cu + gv3cu + gv1 + gv2 + gv3;
+            if (idgv1 === "" || idgv2 === "" || idgv3 === "") {
+                showInfoToastHD();
+            }
+            else if (((idgv1 === idgv2) || (idgv2 === idgv3) || (idgv1 === idgv3) || (idgv2 === idgv3 === idgv1))) {
+                showInfoToastcheckHD();
+            }
+            else {
+                $.ajax({
+                    url: '/QuanLy/FixThanhVienHD',
+                    type: 'post',
+                    data: {
+                        idHoiDong: idHD,
+                        strHDfix: strHD
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            showSuccessToastfixPhanCongHoiDong();
+                            setTimeout(function () { location.reload() }, 700);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        })
+
+    });
+
+
+    //Huy Hoi dong
+    $(document).on("click", "button[name='delete']", function () {
+        let id = $(this).closest('tr').attr('id');
+        $('#titleAddHoiDong').text("Xóa hội đồng")
+        $('#btn_ThemHoiDong').hide();
+        $('.form-control').hide();
+        $('#btn_Huy').show();
+        $("#modalThemHoiDong").modal();
+        $('#soluongHoidong').text(" Bạn có đồng ý xóa hội đồng không?");
+        $('#btn_Huy').click(function () {
+            $.ajax({
+                url: '/QuanLy/XoaHoiDong',
+                type: 'post',
+                data: {
+                    idHD: id
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        showErrorToast();
+                        setTimeout(function () { location.reload() }, 1000);
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            });
+        })
+    });
+
+
+    //Thêm hội đồng
+    $(document).on("click", "button[name='create']", function () {
+        $('#titleAddHoiDong').text("Thêm Hội đồng")
+        $('#countNum').show();
+        $('#btn_Huy').hide();
+        $('.form-control').show();
+        $('#btn_ThemHoiDong').show();
+        $('#soluongHoidong').text("Nhập số lượng hội đồng cần thêm:");
+        $('#modal-body-add').hide();
+        $("#modalThemHoiDong").modal();
+        let Slhd;
+        $(":input").on('keyup mouseup', function () {
+            Slhd = $("#countNum").val();
+        }).trigger('mouseup');
+/*        let Slhd = $('#countNum').val();*/
+        $('#btn_ThemHoiDong').click(function () {
+            $.ajax({
+                url: '/QuanLy/ThemHoiDong',
+                type: 'post',
+                data: {
+                    SL: Slhd
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        showSuccessToastHoiDong();
+                        setTimeout(function () { location.reload()  }, 700);
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            });
+        })
+
+    });
+    //check Phân công
+    $('.checkPC').click(function () {
+        showErrorToastCheckPhanCong();
+    })
+    //check fix Phân công
+    $('.checkfixPC').click(function () {
+        showInfoToastcheckfixHD();
+    })
+    //Phân công
+    $(document).on("click", "button[name='update']", function () {
+        var idHD = $(this).closest('tr').attr('id');
+        Get_DSGV();
+        $("#titlePhanCongHoiDong").text('Phân công hội đồng');
+        $("#modalHoiDong").modal('show');
+        $('#btn_PhanCong').click(function () {
+            let strA = "";
+            let gv1 = $("#Select_DsGV1").val() + '|';
+            let gv2 = $("#Select_DsGV2").val() + '|';
+            let gv3 = $("#Select_DsGV3").val();
+            let idgv1 = $("#Select_DsGV1").val() ;
+            let idgv2 = $("#Select_DsGV2").val();
+            let idgv3 = $("#Select_DsGV3").val();
+            strA = gv1 + gv2 + gv3;
+            if (idgv1 === "" || idgv2 === "" || idgv3 === "") {
+                showInfoToastHD();
+            }
+            else if((idgv1 === idgv2) || (idgv2 === idgv3) || (idgv1 === idgv3) || (idgv2 === idgv3 === idgv1)) {
+                showInfoToastcheckHD();
+            } else {
+                $.ajax({
+                    url: '/QuanLy/AddThanhVienHD',
+                    type: 'post',
+                    data: {
+                        iHD: idHD,
+                        strHD: strA
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            showSuccessToastPhanCongHoiDong();
+                            setTimeout(function () { location.reload() }, 700)
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    function Get_DSGV() {
+        $.ajax({
+            url: '@Url.Action("DsGiangVien","QuanLy")',
+            type: 'get',
+            data: {},
+            success: function (data) {
+                if (data.code == 200) {
+                    $('#Select_DsGV1').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $('#Select_DsGV2').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $('#Select_DsGV3').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $('#Select_DsGVSua1').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $('#Select_DsGVSua2').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $('#Select_DsGVSua3').empty().append(new Option('Chọn Giảng Viên', ""));
+                    $.each(data.gv, function (k, v) {
+                            $('#Select_DsGV1').append($('<option>',
+                                {
+                                    value: v.MaGiangVien,
+                                    text: v.TenGiangVien
+                                }));
+                        $('#Select_DsGV2').append($('<option>',
+                            {
+                                value: v.MaGiangVien,
+                                text: v.TenGiangVien
+                            }));
+                        $('#Select_DsGV3').append($('<option>',
+                            {
+                                value: v.MaGiangVien,
+                                text: v.TenGiangVien
+                            }));
+                        $('#Select_DsGVSua1').append($('<option>',
+                            {
+                                value: v.MaGiangVien,
+                                text: v.TenGiangVien
+                            }));
+                        $('#Select_DsGVSua2').append($('<option>',
+                            {
+                                value: v.MaGiangVien,
+                                text: v.TenGiangVien
+                            }));
+                        $('#Select_DsGVSua3').append($('<option>',
+                            {
+                                value: v.MaGiangVien,
+                                text: v.TenGiangVien
+                            }));
+                    })
+                }
+            }
+        });
+    }
+
+    function Get_DSGVChinhSua(idhd)
+    {
+        let id = 0;
+        $.ajax({
+            url: '@Url.Action("DsGiangVienHD", "QuanLy")',
+            type: 'get',
+            data: {id:idhd},
+            success: function (data) {
+                if (data.code == 200) {
+
+                    $.each(data.gvcu, function (k, v) {
+                        id++;
+                        let s = '<div class="form-group">';
+                        s += '<label id="lb' + id + '">Chủ tịch hội đồng: </label>';
+                        s += '<input id="gvcu'+id+'" class="form-control" value="' + v.MaGV + '" hidden />'
+                        s += '<input class="form-control" value="' + v.TenGV + '" readonly/>';
+                        $('#DsCTGVcu').append(s);
+                        return;
+                    })
+                }
+            }
+        });
+    }
+
+
+    
+</script>

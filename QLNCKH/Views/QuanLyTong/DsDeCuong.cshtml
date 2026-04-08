@@ -1,0 +1,159 @@
+﻿@model IEnumerable<QLNCKH.Models.DTO.DTDangKy>
+@{
+    ViewBag.Title = "DsDeCuong";
+    Layout = "~/Views/Shared/_LayoutQuanLyTong.cshtml";
+}
+
+<style>
+    #txtLink:hover {
+        border: 1px solid #6bacb2;
+        cursor: pointer
+    }
+
+    h4 {
+        margin: auto;
+        font-weight: 600;
+        font-size: 21px;
+    }
+
+    .modal-header {
+        display: flex;
+    }
+
+        .modal-header .close {
+            padding: 0;
+            margin: 0;
+        }
+
+    .badge-color-success {
+        background-color: #d6f0e0;
+        color: #0d6832;
+    }
+
+    .badge-color-primary {
+        background-color: #dfe7f6;
+        color: #2c58a0;
+    }
+
+    .badge-color-warning {
+        background-color: #fbf0da;
+        color: #73510d;
+    }
+</style>
+@*THEM STYLE TOAST*@
+<link href="~/Theme/toast/css/toast.css" rel="stylesheet" />
+@*THEM js TOAST*@
+<script src="~/Theme/toast/js/js-toast.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#mytable').DataTable();
+    });
+</script>
+<div class="content-wrapper">
+    <div id="toast">
+    </div>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h2 style="text-align:center">Danh Sách Đề Cương</h2>
+                    <br />
+                    <br />
+
+                    <div style="display:flex;justify-content:space-between">
+                        <div>
+                            @using (Html.BeginForm("DsDeCuong", "QuanLyTong", FormMethod.Get, new { @class = "form-inline" }))
+                            {
+
+                                <span style="margin-left:10px">Từ Ngày: </span>
+                                <input style="height:32px" type="date" name="strLoc1" id="strLocjs1" value="@ViewBag.str1"/>
+
+                                <spans style="margin-left:10px">Đến Ngày: </spans>
+
+                                <input style="height:32px" type="date" name="strLoc2" id="strLocjs2" value="@ViewBag.str2"/>
+
+
+                                <button type="submit" class="btn btn-sm btn-info" id="Loc" style="border-radius: unset; margin-left: 10px;height:32px"><i class="fa-solid fa-list-check"></i> Lọc</button>
+
+                            }
+                        </div>
+                        <div>
+                            @using (Html.BeginForm("GenerateReport", "QuanLyTong", FormMethod.Get, new { @class = "form-inline" }))
+                            {
+                                <input style="display:none" type="text" name="str1" value="@ViewBag.str1">
+                                <input style="display:none" type="text" name="str2" value="@ViewBag.str2">
+                                <button class="btn btn-sm btn-info" style="height:32px;border:none;" id="Export">Generate Excel Report</button>
+                            }
+                        </div>
+                    </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+
+                                        <table class="table" id="mytable">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.TenDeTai)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.MaSoSinhVien)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.TenGiangVien)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GhiChu)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.TenTrangThai)
+                                                    </th>
+                                                    @*<th style="text-align:center"> @Html.DisplayName("Hành Động")</th>*@
+                                                </tr>
+                                            </thead>
+
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr id="@item.IDDangKy">
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.TenDeTai)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.MaSoSinhVien)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.TenGiangVien)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.GhiChu)
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-color rounded-pill d-inline">
+                                                            @Html.DisplayFor(modelItem => item.TenTrangThai)
+                                                        </span>
+                                                    </td>
+                                                    @*<td style="text-align:center">
+                                            <button class="btn btn-sm btn-info" name="update"><i class="fa-solid fa-list-check"></i> Phân công</button>&nbsp
+                                            <button class="btn btn-sm btn-warning" name="view"><i class="fa-solid fa-wrench"></i> Chi tiết</button>&nbsp
+                                            <button class="btn btn-sm btn-danger" name="delete" data-toggle="modal" data-target="#ModalHuy" data-id="@item.MaDeTai"><i class="fa-solid fa-trash-can"></i> Hủy</button>
+                                        </td>*@
+                                                </tr>
+                                            }
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

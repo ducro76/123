@@ -1,0 +1,83 @@
+﻿@model QLNCKH.Models.DTO.DTDangKy
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutQuanLy.cshtml";
+}
+
+<h2>Detail</h2>
+
+<div>
+    <h4>DTDangKy</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.IDDangKy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDDangKy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TenDeTai)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenDeTai)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaSoSinhVien)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaSoSinhVien)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaSoGiangVien)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaSoGiangVien)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TenGiangVien)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenGiangVien)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GhiChu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GhiChu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TenTrangThai)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenTrangThai)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -16,7 +16,7 @@ namespace QLNCKH
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "TrangChu", action = "TrangChu", id = UrlParameter.Optional }
+                defaults: new { controller = "User", action = "Login", id = UrlParameter.Optional }
                 ,namespaces: new[] { "QLNCKH.Controllers" }
             );
         }

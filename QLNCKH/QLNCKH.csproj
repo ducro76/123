@@ -2174,9 +2174,6 @@
     <Content Include="Theme\fonts\BebasNeueRegular.eot" />
     <Content Include="Theme\fonts\BebasNeueRegular.ttf" />
     <Content Include="Theme\fonts\BebasNeueRegular.woff" />
-    <Content Include="Views\TrangChu\TrangChu.cshtml" />
-    <Content Include="Views\TrangChu\PartialNav.cshtml" />
-    <Content Include="Views\TrangChu\PartialFooter.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
     <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
     <Content Include="Views\StudentDB\StudentDB.cshtml" />
@@ -2265,10 +2262,6 @@
     <Content Include="Views\StudentDB\ProfileSV.cshtml" />
     <Content Include="Views\GiangVien\PartialNavGV.cshtml" />
     <Content Include="Views\GiangVien\ProfileGV.cshtml" />
-    <Content Include="Views\TrangChu\About.cshtml" />
-    <Content Include="Views\TrangChu\TinTuc.cshtml" />
-    <Content Include="Views\TrangChu\Contact.cshtml" />
-    <Content Include="Views\TrangChu\ThongBao.cshtml" />
     <Content Include="Views\StudentDetai\DsDeTai.cshtml" />
     <Content Include="Views\QuanLy\DsDeTaiNghiemThu.cshtml" />
     <Content Include="Views\QuanLy\PhanCongHoiDongNghiemThu.cshtml" />
@@ -2293,6 +2286,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Theme\Luufile\" />
+    <Folder Include="Views\TrangChu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

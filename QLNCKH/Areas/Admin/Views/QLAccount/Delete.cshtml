@@ -1,0 +1,15 @@
+@model QLNCKH.Models.ACCOUNT
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h3>Xác nh?n xóa tài kho?n</h3>
+<div class="alert alert-danger">
+    B?n có ch?c mu?n xóa tài kho?n: <strong>@Model.UserName</strong> (Id: @Model.MaAccount) ?
+</div>
+@using (Html.BeginForm("Delete","QLAccount", FormMethod.Post, new { area = "Admin" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.MaAccount)
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index","QLAccount", new { area = "Admin" })">H?y</a>
+}

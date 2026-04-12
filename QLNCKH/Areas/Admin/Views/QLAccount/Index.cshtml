@@ -1,34 +1,66 @@
 ﻿
+@model IEnumerable<QLNCKH.Models.ACCOUNT>
 @{
-    ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
-<div class="container-fluid" style=" border: 3px dashed #0066FF">
-    <br />
-    <h2 style="text-align:center">Upload Tài Khoản</h2>
-    <br /><br />
-    @using (Html.BeginForm("Index", "QLAccount", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <div class="container">
-            <div class="form-group" style="text-align:center">
-                <label for="csvfile" style="text-align:center">Chọn File CSV Cần Import:</label>
-                <input type="file" name="csvfile" class="form-control-file" id="csvfile" />
-            </div>
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" style="margin-right:44px">Tải lên</button>
-            </div>
 
+<div class="container-fluid">
+    <h3>Danh sách tài khoản</h3>
+    <p>
+        <a class="btn btn-success" href="@Url.Action("Create","QLAccount", new { area = "Admin" })">Thêm tài khoản</a>
+    </p>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Họ và tên</th>
+                <th>Loại</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaAccount</td>
+                <td>@item.UserName</td>
+                <td>@item.Email</td>
+                <td>@item.HoVaTen</td>
+                <td>
+                    @{ 
+                        var typeText = item.MaTypeAccount == 1 ? "Sinh Viên" 
+                                       : item.MaTypeAccount == 2 ? "Giảng Viên" 
+                                       : item.MaTypeAccount == 3 ? "Quản Lý"
+                                       : item.MaTypeAccount == 6 ? "Admin" 
+                                       : item.MaTypeAccount.ToString();
+                    }
+                    @typeText
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="@Url.Action("Details","QLAccount", new { id = item.MaAccount, area = "Admin" })">Xem</a>
+                    <a class="btn btn-primary btn-sm" href="@Url.Action("Edit","QLAccount", new { id = item.MaAccount, area = "Admin" })">Sửa</a>
+                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete","QLAccount", new { id = item.MaAccount, area = "Admin" })">Xóa</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <hr />
+    <h4>Nhập file CSV</h4>
+    @using (Html.BeginForm("Import", "QLAccount", FormMethod.Post, new { enctype = "multipart/form-data", area = "Admin" }))
+    {
+        <div class="form-group">
+            <input type="file" name="csvfile" />
         </div>
-
+        <button type="submit" class="btn btn-primary">Import CSV</button>
     }
-    <br />
-    <br />
-    @if (!string.IsNullOrEmpty(ViewBag.Message))
-    {
-        <p class="alert alert-success" style="text-align:center">@ViewBag.Message</p>
-    }
-
-
 </div>
-
-

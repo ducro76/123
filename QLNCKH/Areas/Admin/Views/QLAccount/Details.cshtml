@@ -1,0 +1,33 @@
+@model QLNCKH.Models.ACCOUNT
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h3>Chi ti?t tài kho?n</h3>
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Id</dt>
+            <dd class="col-sm-9">@Model.MaAccount</dd>
+
+            <dt class="col-sm-3">UserName</dt>
+            <dd class="col-sm-9">@Model.UserName</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">H? và tên</dt>
+            <dd class="col-sm-9">@Model.HoVaTen</dd>
+
+            <dt class="col-sm-3">Lo?i</dt>
+            <dd class="col-sm-9">
+                @{ var typeText = Model.MaTypeAccount == 1 ? "Sinh Viên"
+                     : Model.MaTypeAccount == 2 ? "Gi?ng Viên"
+                     : Model.MaTypeAccount == 3 ? "Qu?n L?"
+                     : Model.MaTypeAccount == 6 ? "Admin"
+                     : Model.MaTypeAccount.ToString(); }
+                @typeText
+            </dd>
+        </dl>
+        <a class="btn btn-secondary" href="@Url.Action("Index","QLAccount", new { area = "Admin" })">Quay l?i</a>
+    </div>
+</div>

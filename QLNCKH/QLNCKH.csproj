@@ -627,10 +627,10 @@
     <Content Include="Areas\Admin\Views\QLThongBao\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\QLThongBao\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\QLAccount\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\QLAccount\Create.cshtml" />
     <Content Include="Areas\Admin\Views\QLAccount\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\QLAccount\Details.cshtml" />
     <Content Include="Areas\Admin\Views\QLAccount\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\QLAccount\Create.cshtml" />
     <None Include="Models\DataQLNCKH.dbml.layout">
       <DependentUpon>DataQLNCKH.dbml</DependentUpon>
     </None>

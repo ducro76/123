@@ -40,13 +40,15 @@ namespace QLNCKH.Areas.Admin.Controllers
             var mk = f["password"];
             ACCOUNT ac = db.ACCOUNTs.SingleOrDefault(n => n.UserName == tk && n.Pass == GetMD5(mk));
 
-            if (ac != null && ac.MaTypeAccount == 6)
+            // Allow MaTypeAccount 6 (Admin) and 3 (Quản Lý) to log into admin area
+            if (ac != null && (ac.MaTypeAccount == 6 || ac.MaTypeAccount == 3))
             {
                 Session["TaiKhoan"] = ac;
-                GIANGVIEN ad = db.GIANGVIENs.SingleOrDefault(n => n.MaSoGiangVien == tk.ToString());
+                // try to set Admin session to corresponding GIANGVIEN if exists
+                GIANGVIEN ad = db.GIANGVIENs.SingleOrDefault(n => n.MaSoGiangVien == ac.UserName);
                 Session["Admin"] = ad;
                 return RedirectToAction("Index","Home");
-            }        
+            }
             else
             {
 

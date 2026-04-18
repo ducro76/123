@@ -1,0 +1,6 @@
+@startuml
+skinparam classAttributeIconSize 0
+  MaAccount : Int NOT NULL IDENTITY <<PK>>
+  MaTypeAccount : Int
+}
+@enduml

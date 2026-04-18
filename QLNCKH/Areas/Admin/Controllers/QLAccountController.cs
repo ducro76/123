@@ -79,6 +79,50 @@ namespace QLNCKH.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(model.Pass)) model.Pass = GetMD5(model.Pass);
                 db.ACCOUNTs.InsertOnSubmit(model);
                 db.SubmitChanges();
+
+                // Ensure corresponding profile records exist so newly created account can log in without null session objects.
+                try
+                {
+                    // If student -> ensure SINHVIEN exists
+                    if (model.MaTypeAccount.HasValue && model.MaTypeAccount.Value == 1)
+                    {
+                        var existSv = db.SINHVIENs.SingleOrDefault(s => s.MaSoSinhVien == model.UserName);
+                        if (existSv == null)
+                        {
+                            var sv = new SINHVIEN()
+                            {
+                                MaSoSinhVien = model.UserName,
+                                HoTen = model.HoVaTen,
+                                Email = model.Email,
+                                MaAccount = model.MaAccount
+                            };
+                            db.SINHVIENs.InsertOnSubmit(sv);
+                            db.SubmitChanges();
+                        }
+                    }
+                    // If giảng viên / quản lý / admin types -> ensure GIANGVIEN exists
+                    else if (model.MaTypeAccount.HasValue && (new int[] { 2, 3, 4, 5, 6 }.Contains(model.MaTypeAccount.Value)))
+                    {
+                        var existGv = db.GIANGVIENs.SingleOrDefault(g => g.MaSoGiangVien == model.UserName);
+                        if (existGv == null)
+                        {
+                            var gv = new GIANGVIEN()
+                            {
+                                MaSoGiangVien = model.UserName,
+                                TenGiangVien = model.HoVaTen,
+                                Gmail = model.Email,
+                                MaAccount = model.MaAccount
+                            };
+                            db.GIANGVIENs.InsertOnSubmit(gv);
+                            db.SubmitChanges();
+                        }
+                    }
+                    // otherwise do not create profile automatically
+                }
+                catch
+                {
+                    // ignore profile creation errors so account creation still succeeds; admin can add profiles later
+                }
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -129,8 +173,29 @@ namespace QLNCKH.Areas.Admin.Controllers
             int id = model.MaAccount;
             var ac = db.ACCOUNTs.SingleOrDefault(a => a.MaAccount == id);
             if (ac == null) return HttpNotFound();
-            db.ACCOUNTs.DeleteOnSubmit(ac);
-            db.SubmitChanges();
+            try
+            {
+                // Remove references from dependent profiles so ACCOUNT can be deleted without FK errors.
+                var svs = db.SINHVIENs.Where(s => s.MaAccount == id).ToList();
+                foreach (var sv in svs)
+                {
+                    sv.MaAccount = null;
+                }
+                var gvs = db.GIANGVIENs.Where(g => g.MaAccount == id).ToList();
+                foreach (var gv in gvs)
+                {
+                    gv.MaAccount = null;
+                }
+                db.SubmitChanges();
+
+                db.ACCOUNTs.DeleteOnSubmit(ac);
+                db.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Xóa tài khoản thất bại: " + ex.Message;
+                return RedirectToAction("Index");
+            }
             return RedirectToAction("Index");
         }
 
